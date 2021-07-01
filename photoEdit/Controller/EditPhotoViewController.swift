@@ -7,7 +7,7 @@
     
     import UIKit
     import CoreImage.CIFilterBuiltins
-    import SpriteKit
+
     
     class EditPhotoViewController: UIViewController ,UIColorPickerViewControllerDelegate{
         
@@ -56,14 +56,8 @@
         var filterNum: Int = 0
         var oneDegree = (CGFloat).pi/180
         var cuteImg = UIImageView()
-        var backView = UIView() //裝載background
-        var background = UIImageView()
-        var maskTimes = 1 //這邊如果設定０，遮色片mask後的主圖會消失，除非要再次選擇遮色片
-        var getBoldTimes = 0
-        var getItalicTimes = 0
-        var getBigTimes = 0
-        var getSmallTimes = 0
-        var pressWordTimes = 0
+        var backView = UIView() //裝載backgroundImageView
+        var backgroundImageView = UIImageView()
         var fontSize: CGFloat = 50
         var newFontSize: CGFloat = 50
         
@@ -73,7 +67,7 @@
             editImageView.image = photoImg.photo
             
             editImageView.frame = editBackgroundView.bounds
-            background.frame = editBackgroundView.bounds
+            backgroundImageView.frame = editBackgroundView.bounds
             //設定編輯區域框線
             editBackgroundView.layer.borderWidth = 0.5
             editBackgroundView.layer.borderColor = .init(gray: 0.5, alpha: 0.5)
@@ -226,7 +220,7 @@
         
         //選取文字功能
         @IBAction func pressWord(_ sender: Any) {
-            pressWordTimes += 1
+            photoImg.pressWordTimes += 1
             photoImg.isShowWord = true
             photoImg.isCuteImg = false
             
@@ -244,7 +238,7 @@
             upDownSlider.isHidden = false
             leftRightSlider.isHidden = false
             
-            if pressWordTimes % 2 != 0 {
+            if photoImg.pressWordTimes % 2 != 0 {
                 wordTextField.placeholder = "message"
             }else{
                 wordTextField.placeholder = .none
@@ -350,8 +344,6 @@
         
         //裁切－三角形
         @IBAction func cropTriangle(_ sender: Any) {
-            photoImg.isMask = true
-            maskTimes += 1
             let imageView = UIImageView(image: UIImage(systemName: "triangle.fill"))
             imageView.frame = editImageView.bounds
             editImageView.mask = imageView
@@ -359,8 +351,6 @@
         
         //裁切－菱形
         @IBAction func cropDiamond(_ sender: Any) {
-            photoImg.isMask = true
-            maskTimes += 1
             let imageView = UIImageView(image: UIImage(systemName: "diamond.fill"))
             imageView.frame = editImageView.bounds
             editImageView.mask = imageView
@@ -368,8 +358,6 @@
         
         //裁切－星形
         @IBAction func cropStar(_ sender: Any) {
-            photoImg.isMask = true
-            maskTimes += 1
             let imageView = UIImageView(image: UIImage(systemName: "star.fill"))
             imageView.frame = editImageView.bounds
             editImageView.mask = imageView
@@ -377,8 +365,6 @@
         
         //裁切-愛心型
         @IBAction func cropHeart(_ sender: Any) {
-            photoImg.isMask = true
-            maskTimes += 1
             let imageView = UIImageView(image: UIImage(systemName: "heart.fill"))
             imageView.frame = editImageView.bounds
             editImageView.mask = imageView
@@ -390,7 +376,7 @@
                 cuteImg.image = .none
             }
             if sender == clearBgBtn {
-                background.image = .none
+                backgroundImageView.image = .none
             }
         }
         
@@ -411,19 +397,10 @@
         
         //選取背景圖
         @IBAction func pressBackground(_ sender: UIButton) {
-            background.image = sender.currentBackgroundImage
-            background.contentMode = .scaleAspectFill
-            backView.addSubview(background)
-            
-            if photoImg.isMask == true {
-                editBackgroundView.insertSubview(backView, at: 1)
-            }else{
-                editBackgroundView.insertSubview(backView, at: 0)
-            }
-            if maskTimes > 1 {
-                editBackgroundView.insertSubview(backView, at: 0)
-                backView.addSubview(background)
-            }
+            backgroundImageView.image = sender.currentBackgroundImage
+            backgroundImageView.contentMode = .scaleAspectFill
+            backView.addSubview(backgroundImageView)
+            editBackgroundView.insertSubview(backView, at: 0)
         }
         
         //建立濾鏡
@@ -463,29 +440,29 @@
                 controller.delegate = self
                 present(controller, animated: true, completion: nil)
             case getBoldBtn: do {
-                getBoldTimes += 1
-                if getBoldTimes % 2 != 0 {
+                photoImg.getBoldTimes += 1
+                if photoImg.getBoldTimes % 2 != 0 {
                     self.wordTextField.font = UIFont.boldSystemFont(ofSize: newFontSize)
                 }else {
                     self.wordTextField.font = UIFont.systemFont(ofSize: newFontSize)
                 }
             }
             case getItalicBtn: do {
-                getItalicTimes += 1
-                if getItalicTimes % 2 != 0{
+                photoImg.getItalicTimes += 1
+                if photoImg.getItalicTimes % 2 != 0{
                     self.wordTextField.font = UIFont.italicSystemFont(ofSize: newFontSize)
                 }else {
                     self.wordTextField.font = UIFont.systemFont(ofSize: newFontSize)
                 }
             }
             case getBigBtn: do {
-                self.getBigTimes += 1
-                newFontSize = fontSize + CGFloat(getBigTimes)
+                photoImg.getBigTimes += 1
+                newFontSize = fontSize + CGFloat(photoImg.getBigTimes)
                 wordTextField.font = UIFont.systemFont(ofSize: newFontSize)
             }
             case getSmallBtn: do {
-                self.getSmallTimes -= 1
-                newFontSize = fontSize + CGFloat(getSmallTimes)
+                photoImg.getSmallTimes -= 1
+                newFontSize = fontSize + CGFloat(photoImg.getSmallTimes)
                 wordTextField.font = UIFont.systemFont(ofSize: newFontSize)
             }
             default:

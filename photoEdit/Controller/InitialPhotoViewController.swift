@@ -45,3 +45,24 @@ class InitialPhotoViewController: UIViewController,UINavigationControllerDelegat
         return vc
     }    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
